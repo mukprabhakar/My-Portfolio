@@ -1,0 +1,1878 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mukesh Pal - Innovative Developer Portfolio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&family=Space+Grotesk:wght@400;500;700&display=swap"
+        rel="stylesheet">
+    <!-- Three.js for 3D elements -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/controls/OrbitControls.js"></script>
+    <!-- Typed.js for typing animations -->
+    <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
+
+    <style>
+        body {
+            font-family: 'Space Grotesk', 'Inter', sans-serif;
+            background-color: #0a0a0a;
+            color: #f4f4f5;
+            overflow-x: hidden;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #18181b;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #34d399;
+            border-radius: 4px;
+        }
+
+        /* Gradient text */
+        .gradient-text {
+            background: linear-gradient(90deg, #34d399, #3b82f6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        /* 3D card effect */
+        .card-3d {
+            transform-style: preserve-3d;
+            transition: transform 0.5s ease, box-shadow 0.5s ease;
+        }
+
+        .card-3d:hover {
+            transform: translateY(-10px) rotateX(5deg) rotateY(5deg);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Glow effect */
+        .glow-effect {
+            position: relative;
+        }
+
+        .glow-effect::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at center, rgba(52, 211, 153, 0.15) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+
+        .glow-effect:hover::after {
+            opacity: 1;
+        }
+
+        /* Particle background */
+        #particles-js {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: -1;
+        }
+
+        /* Custom animations */
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        .float-animation {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        .pulse-animation {
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        /* Glass morphism effect */
+        .glass-card {
+            background: rgba(39, 39, 42, 0.5);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Terminal effect */
+        .terminal {
+            background: #111827;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+        }
+
+        .terminal-header {
+            background: #1f2937;
+            padding: 8px 12px;
+            display: flex;
+            align-items: center;
+        }
+
+        .terminal-button {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 6px;
+        }
+
+        .terminal-button.red {
+            background: #ef4444;
+        }
+
+        .terminal-button.yellow {
+            background: #f59e0b;
+        }
+
+        .terminal-button.green {
+            background: #10b981;
+        }
+
+        .terminal-body {
+            padding: 16px;
+            font-family: 'Courier New', monospace;
+            line-height: 1.6;
+        }
+
+        .terminal-prompt {
+            color: #34d399;
+        }
+
+        .terminal-cursor {
+            display: inline-block;
+            width: 8px;
+            height: 16px;
+            background: #34d399;
+            vertical-align: middle;
+            animation: blink 1s step-end infinite;
+        }
+
+        @keyframes blink {
+
+            from,
+            to {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0;
+            }
+        }
+
+        /* Interactive timeline */
+        .timeline-item {
+            position: relative;
+            padding-left: 60px;
+            margin-bottom: 40px;
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #34d399;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            transform: scale(1);
+            transition: transform 0.3s ease;
+        }
+
+        .timeline-item:hover .timeline-dot {
+            transform: scale(1.2);
+        }
+
+        .timeline-content {
+            position: relative;
+            padding: 20px;
+            background: #1f2937;
+            border-radius: 8px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .timeline-item:hover .timeline-content {
+            transform: translateX(10px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .timeline-content::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: -10px;
+            width: 0;
+            height: 0;
+            border-top: 10px solid transparent;
+            border-bottom: 10px solid transparent;
+            border-right: 10px solid #1f2937;
+        }
+
+        /* Interactive skill bars */
+        .skill-bar {
+            height: 8px;
+            background: #1f2937;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .skill-progress {
+            height: 100%;
+            background: linear-gradient(90deg, #34d399, #3b82f6);
+            border-radius: 4px;
+            width: 0;
+            transition: width 1.5s ease;
+        }
+
+        .skill:hover .skill-progress {
+            background: linear-gradient(90deg, #3b82f6, #34d399);
+        }
+
+        /* Testimonial styles */
+        .testimonial-card {
+            background: linear-gradient(135deg, rgba(31, 41, 55, 0.7), rgba(17, 24, 39, 0.9));
+            transition: all 0.3s ease;
+        }
+
+        .testimonial-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(52, 211, 153, 0.2);
+        }
+
+        .testimonial-avatar {
+            width: 60px;
+            height: 60px;
+            border: 3px solid #34d399;
+        }
+
+        .quote-icon {
+            color: #34d399;
+            opacity: 0.3;
+            font-size: 4rem;
+            position: absolute;
+            top: 0;
+            right: 20px;
+            line-height: 1;
+        }
+
+        /* Blog card styles */
+        .blog-card {
+            transition: all 0.3s ease;
+            background: linear-gradient(135deg, rgba(31, 41, 55, 0.7), rgba(17, 24, 39, 0.9));
+        }
+
+        .blog-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(52, 211, 153, 0.2);
+        }
+
+        .blog-image {
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .blog-tag {
+            background: rgba(52, 211, 153, 0.1);
+            color: #34d399;
+        }
+    </style>
+</head>
+
+<body class="antialiased">
+
+    <!-- Floating particles background -->
+    <div id="particles-js"></div>
+
+    <!-- 3D Avatar Container -->
+    <div id="avatar-container" class="fixed bottom-8 right-8 w-32 h-32 z-50 hidden md:block"></div>
+
+    <!-- Gradient cursor follower -->
+    <div id="cursor-follower"
+        class="fixed w-8 h-8 rounded-full bg-gradient-to-r from-emerald-400 to-blue-500 pointer-events-none transform -translate-x-1/2 -translate-y-1/2 mix-blend-screen z-50"
+        style="opacity: 0;"></div>
+
+    <header class="bg-zinc-900/80 backdrop-blur-lg fixed top-0 left-0 right-0 z-40 shadow-lg border-b border-zinc-800">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <h1 class="text-2xl font-bold gradient-text">Mukesh Pal</h1>
+            <nav class="hidden md:flex space-x-8">
+                <a href="#about" class="text-zinc-300 hover:text-emerald-400 transition hover:-translate-y-1">About</a>
+                <a href="#skills"
+                    class="text-zinc-300 hover:text-emerald-400 transition hover:-translate-y-1">Skills</a>
+                <a href="#projects"
+                    class="text-zinc-300 hover:text-emerald-400 transition hover:-translate-y-1">Projects</a>
+                <a href="#experience"
+                    class="text-zinc-300 hover:text-emerald-400 transition hover:-translate-y-1">Journey</a>
+                <a href="#achievements"
+                    class="text-zinc-300 hover:text-emerald-400 transition hover:-translate-y-1">Achievements</a>
+                <a href="#testimonials"
+                    class="text-zinc-300 hover:text-emerald-400 transition hover:-translate-y-1">Testimonials</a>
+                <a href="#blog" class="text-zinc-300 hover:text-emerald-400 transition hover:-translate-y-1">Blog</a>
+                <a href="#contact"
+                    class="text-zinc-300 hover:text-emerald-400 transition hover:-translate-y-1">Contact</a>
+            </nav>
+            <button id="mobile-menu-button" class="md:hidden text-zinc-300 hover:text-emerald-400">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7">
+                    </path>
+                </svg>
+            </button>
+        </div>
+        <!-- Mobile menu -->
+        <div id="mobile-menu"
+            class="hidden md:hidden bg-zinc-900/95 backdrop-blur-lg py-4 px-6 border-t border-zinc-800">
+            <div class="flex flex-col space-y-4">
+                <a href="#about" class="text-zinc-300 hover:text-emerald-400 transition">About</a>
+                <a href="#skills" class="text-zinc-300 hover:text-emerald-400 transition">Skills</a>
+                <a href="#projects" class="text-zinc-300 hover:text-emerald-400 transition">Projects</a>
+                <a href="#experience" class="text-zinc-300 hover:text-emerald-400 transition">Journey</a>
+                <a href="#achievements" class="text-zinc-300 hover:text-emerald-400 transition">Achievements</a>
+                <a href="#testimonials" class="text-zinc-300 hover:text-emerald-400 transition">Testimonials</a>
+                <a href="#blog" class="text-zinc-300 hover:text-emerald-400 transition">Blog</a>
+                <a href="#contact" class="text-zinc-300 hover:text-emerald-400 transition">Contact</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="pt-20">
+      <!-- Hero Section with Coding-Themed Animations -->
+<section id="hero" class="relative min-h-screen flex items-center justify-center text-center overflow-hidden">
+    <!-- Animated Code Background (Desktop Only) -->
+    <div class="hidden lg:block absolute inset-0 overflow-hidden opacity-10">
+        <div id="code-background" class="absolute inset-0 font-mono text-xs text-emerald-400/30 whitespace-pre"></div>
+    </div>
+    
+    <!-- Gradient Overlay -->
+    <div class="absolute inset-0 bg-gradient-to-br from-black via-zinc-900 to-zinc-800 opacity-95"></div>
+    
+    <div class="container mx-auto px-6 relative z-10">
+        <!-- Profile with Coding Terminal Effect -->
+        <div class="relative group mb-10 mx-auto w-fit">
+            <div class="w-44 h-44 rounded-full mx-auto border-4 border-emerald-400 shadow-lg glow-effect overflow-hidden transition-all duration-500 group-hover:shadow-emerald-400/30">
+                <img src="https://media.licdn.com/dms/image/v2/D5603AQH2635Vzkq6Xg/profile-displayphoto-shrink_800_800/B56ZS4XZNhGsAo-/0/1738259929458?e=1756339200&v=beta&t=LRaLsvud2oL_8KkMX5qEPxR3qWer2nVYxlKMGuwkV68" 
+                     alt="Mukesh Pal" 
+                     class="w-full h-full object-cover object-center transition-transform duration-500 group-hover:scale-105"
+                     onerror="this.onerror=null; this.parentElement.innerHTML='<span class=\'gradient-text text-6xl flex items-center justify-center h-full\'>👨‍💻</span>'">
+            </div>
+            
+            <!-- Terminal Window Effect on Hover -->
+            <div class="absolute -bottom-6 left-1/2 transform -translate-x-1/2 w-64 bg-zinc-900 rounded-lg shadow-xl border border-emerald-400/30 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-4 group-hover:translate-y-0 pointer-events-none">
+                <div class="terminal-header flex items-center px-3 py-2 border-b border-zinc-800">
+                    <div class="flex space-x-2 mr-3">
+                        <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                        <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                        <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                    </div>
+                    <div class="text-xs text-zinc-400">terminal</div>
+                </div>
+                <div class="p-3 text-left text-xs font-mono text-emerald-400">
+                    <span class="text-green-400">$</span> whoami<br>
+                    <span class="text-white">Mukesh_Pal: Software Engineer</span><br>
+                    <span class="text-green-400">$</span> <span class="animate-pulse">_</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Name with Code Bracket Effect -->
+        <h2 class="text-5xl md:text-7xl font-extrabold text-white leading-tight mb-4 relative">
+            <span class="text-zinc-500/50 absolute -left-6 top-0">{"</span>
+            <span class="gradient-text">Mukesh Pal</span>
+            <span class="text-zinc-500/50 absolute -right-6 top-0">"}</span>
+        </h2>
+        
+        <!-- Typed Text with Cursor -->
+        <p class="text-xl md:text-3xl text-zinc-300 font-medium mb-6 relative inline-block px-8">
+            <span class="relative z-10">
+                I'm a <span id="typed" class="text-emerald-400 font-bold"></span>
+            </span>
+            <span class="absolute right-0 top-1/2 transform -translate-y-1/2 w-2 h-8 bg-emerald-400 ml-1 animate-blink"></span>
+        </p>
+        
+        <!-- Tagline with Animated Underline -->
+        <p class="text-lg text-zinc-300 max-w-3xl mx-auto mb-10 relative pb-2">
+            Crafting the digital future with innovative solutions and cutting-edge technology.
+            <span class="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-24 h-0.5 bg-emerald-400 animate-underline-expand"></span>
+        </p>
+        
+        <!-- Buttons with Code-like Styling -->
+        <div class="flex flex-wrap justify-center gap-6 relative z-10">
+            <a href="#contact"
+                class="bg-gradient-to-r from-emerald-500 to-blue-600 text-white font-bold py-3 px-8 rounded hover:shadow-xl transition-all transform hover:scale-105 hover:shadow-emerald-400/20 relative overflow-hidden group font-mono">
+                <span class="relative z-10 flex items-center">
+                    <span class="mr-2">></span> connect()
+                </span>
+                <span class="absolute inset-0 bg-gradient-to-r from-blue-600 to-emerald-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
+            </a>
+            <a href="#projects"
+                class="border-2 border-emerald-400 text-emerald-400 font-bold py-3 px-8 rounded hover:bg-emerald-400/10 transition-all transform hover:scale-105 relative overflow-hidden group font-mono">
+                <span class="relative z-10 flex items-center">
+                    <span class="mr-2">></span> viewProjects()
+                </span>
+                <span class="absolute inset-0 bg-emerald-400/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
+            </a>
+        </div>
+        
+        <!-- Scroll Down Indicator with Binary Animation -->
+        <div class="mt-16 animate-bounce relative group">
+            <a href="#about" class="text-zinc-400 hover:text-emerald-400 transition flex flex-col items-center">
+                <svg class="w-8 h-8 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+                </svg>
+                <span class="text-xs mt-2 font-mono text-zinc-500 group-hover:text-emerald-400 transition-all">01110011 01100011 01110010 01101111 01101100 01101100</span>
+            </a>
+        </div>
+    </div>
+</section>
+
+<style>
+    @keyframes blink {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0; }
+    }
+    @keyframes underline-expand {
+        0% { width: 0; left: 50%; }
+        100% { width: 24rem; left: 50%; }
+    }
+    .animate-blink {
+        animation: blink 1s step-end infinite;
+    }
+    .animate-underline-expand {
+        animation: underline-expand 1.5s ease-out forwards;
+    }
+    .terminal-header {
+        background: linear-gradient(to right, #111827, #1f2937);
+    }
+</style>
+
+<script>
+    // Generate random code background
+    document.addEventListener('DOMContentLoaded', function() {
+        const codeLines = [
+            "function buildPortfolio() {",
+            "  const skills = ['Java', 'Spring', 'React'];",
+            "  let projects = [];",
+            "  projects.push('Hotel Management');",
+            "  projects.push('Crypto Platform');",
+            "  return { success: true };",
+            "}",
+            "class Developer {",
+            "  constructor(name) {",
+            "    this.name = 'Mukesh';",
+            "    this.role = 'Software Engineer';",
+            "  }",
+            "  code() { /*...*/ }",
+            "  debug() { /*...*/ }",
+            "}"
+        ];
+        
+        const codeBg = document.getElementById('code-background');
+        if (codeBg) {
+            // Create multiple columns of code
+            let fullCode = '';
+            for (let i = 0; i < 8; i++) {
+                fullCode += codeLines.join('\n') + '\n\n';
+            }
+            codeBg.textContent = fullCode;
+        }
+        
+        // Initialize typed.js
+        new Typed('#typed', {
+            strings: [
+                'Software Engineer',
+                'Java Developer',
+                'Spring Boot Expert',
+                'Problem Solver',
+                'Tech Leader'
+            ],
+            typeSpeed: 50,
+            backSpeed: 30,
+            loop: true,
+            showCursor: false
+        });
+    });
+</script>
+
+        <!-- About Section with Terminal Effect -->
+        <section id="about" class="py-20 bg-zinc-900">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-16">
+                    <h3 class="text-4xl font-bold gradient-text mb-4">About Me</h3>
+                    <div class="w-24 h-1 bg-gradient-to-r from-emerald-400 to-blue-500 mx-auto"></div>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-12 items-center">
+                    <div class="terminal glow-effect">
+                        <div class="terminal-header">
+                            <div class="terminal-button red"></div>
+                            <div class="terminal-button yellow"></div>
+                            <div class="terminal-button green"></div>
+                            <div class="ml-2 text-sm text-zinc-300">about_mukesh.sh</div>
+                        </div>
+                        <div class="terminal-body">
+                            <div class="mb-4"><span class="terminal-prompt">$</span> whoami</div>
+                            <div class="mb-6 text-zinc-300">Mukesh Pal - Software Developer & Tech Enthusiast</div>
+
+                            <div class="mb-4"><span class="terminal-prompt">$</span> cat bio.txt</div>
+                            <div class="mb-6 text-zinc-300">
+                                Passionate developer specializing in Java and Spring Boot. Currently pursuing BTech at
+                                IIMT University with a CGPA of 8.52. President of E-Cell, Microsoft Learn Student
+                                Ambassador, and Coding Ninjas Campus Captain.
+                            </div>
+
+                            <div class="mb-4"><span class="terminal-prompt">$</span> skills --show</div>
+                            <div class="mb-6 text-zinc-300">
+                                Backend Development | Software Design | Web Development | Leadership
+                            </div>
+
+                            <div class="mb-4"><span class="terminal-prompt">$</span> soft_skills</div>
+                            <div class="mb-6 text-zinc-300">
+                                Problem-Solving | Good Communication | Time Management | Leadership | Team Player |
+                                Quick Learner
+                            </div>
+
+                            <div class="mb-4"><span class="terminal-prompt">$</span> <span
+                                    class="terminal-cursor"></span></div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="grid grid-cols-2 gap-6">
+                            <div class="glass-card p-6 rounded-xl card-3d">
+                                <div class="text-4xl mb-4 gradient-text">💡</div>
+                                <h4 class="font-bold text-xl mb-2 text-white">Innovation</h4>
+                                <p class="text-zinc-300 text-sm">Constantly exploring new technologies and approaches to
+                                    solve problems creatively.</p>
+                            </div>
+                            <div class="glass-card p-6 rounded-xl card-3d">
+                                <div class="text-4xl mb-4 gradient-text">🚀</div>
+                                <h4 class="font-bold text-xl mb-2 text-white">Execution</h4>
+                                <p class="text-zinc-300 text-sm">Turning ideas into reality with clean, efficient, and
+                                    scalable code.</p>
+                            </div>
+                            <div class="glass-card p-6 rounded-xl card-3d">
+                                <div class="text-4xl mb-4 gradient-text">🌐</div>
+                                <h4 class="font-bold text-xl mb-2 text-white">Collaboration</h4>
+                                <p class="text-zinc-300 text-sm">Thriving in team environments to build something
+                                    greater than the sum of its parts.</p>
+                            </div>
+                            <div class="glass-card p-6 rounded-xl card-3d">
+                                <div class="text-4xl mb-4 gradient-text">📈</div>
+                                <h4 class="font-bold text-xl mb-2 text-white">Growth</h4>
+                                <p class="text-zinc-300 text-sm">Committed to continuous learning and professional
+                                    development.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Skills Section with Interactive Bars -->
+        <section id="skills" class="py-20 bg-zinc-950">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-16">
+                    <h3 class="text-4xl font-bold gradient-text mb-4">Technical Skills</h3>
+                    <div class="w-24 h-1 bg-gradient-to-r from-emerald-400 to-blue-500 mx-auto"></div>
+                    <p class="mt-4 text-zinc-400 max-w-2xl mx-auto">A dynamic visualization of my technical
+                        proficiencies and how they interconnect.</p>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-12">
+                    <div>
+                        <div class="skill mb-8">
+                            <div class="flex justify-between mb-2">
+                                <span class="text-zinc-300 font-medium">Java</span>
+                                <span class="text-emerald-400" id="java-percent">0%</span>
+                            </div>
+                            <div class="skill-bar">
+                                <div class="skill-progress" data-percent="90"></div>
+                            </div>
+                        </div>
+                        <div class="skill mb-8">
+                            <div class="flex justify-between mb-2">
+                                <span class="text-zinc-300 font-medium">Spring Boot</span>
+                                <span class="text-emerald-400" id="spring-percent">0%</span>
+                            </div>
+                            <div class="skill-bar">
+                                <div class="skill-progress" data-percent="85"></div>
+                            </div>
+                        </div>
+                        <div class="skill mb-8">
+                            <div class="flex justify-between mb-2">
+                                <span class="text-zinc-300 font-medium">SQL</span>
+                                <span class="text-emerald-400" id="sql-percent">0%</span>
+                            </div>
+                            <div class="skill-bar">
+                                <div class="skill-progress" data-percent="80"></div>
+                            </div>
+                        </div>
+                        <div class="skill mb-8">
+                            <div class="flex justify-between mb-2">
+                                <span class="text-zinc-300 font-medium">React.js</span>
+                                <span class="text-emerald-400" id="react-percent">0%</span>
+                            </div>
+                            <div class="skill-bar">
+                                <div class="skill-progress" data-percent="75"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="relative">
+                        <div class="chart-container bg-zinc-900 p-6 rounded-xl glass-card">
+                            <canvas id="skillsChart"></canvas>
+                        </div>
+                        <div class="absolute -bottom-6 -right-6 w-32 h-32 rounded-full bg-emerald-400/10 blur-xl z-0">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-16 grid md:grid-cols-3 gap-8">
+                    <div class="glass-card p-6 rounded-xl card-3d">
+                        <h4 class="font-bold text-xl mb-4 text-white">Languages</h4>
+                        <ul class="space-y-2">
+                            <li class="flex items-center">
+                                <span class="w-2 h-2 bg-emerald-400 rounded-full mr-2"></span>
+                                <span class="text-zinc-300">Java</span>
+                            </li>
+                            <li class="flex items-center">
+                                <span class="w-2 h-2 bg-emerald-400 rounded-full mr-2"></span>
+                                <span class="text-zinc-300">JavaScript</span>
+                            </li>
+                            <li class="flex items-center">
+                                <span class="w-2 h-2 bg-emerald-400 rounded-full mr-2"></span>
+                                <span class="text-zinc-300">Python</span>
+                            </li>
+                            <li class="flex items-center">
+                                <span class="w-2 h-2 bg-emerald-400 rounded-full mr-2"></span>
+                                <span class="text-zinc-300">HTML/CSS</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="glass-card p-6 rounded-xl card-3d">
+                        <h4 class="font-bold text-xl mb-4 text-white">Frameworks</h4>
+                        <ul class="space-y-2">
+                            <li class="flex items-center">
+                                <span class="w-2 h-2 bg-blue-400 rounded-full mr-2"></span>
+                                <span class="text-zinc-300">Spring Boot</span>
+                            </li>
+                            <li class="flex items-center">
+                                <span class="w-2 h-2 bg-blue-400 rounded-full mr-2"></span>
+                                <span class="text-zinc-300">React.js</span>
+                            </li>
+                            <li class="flex items-center">
+                                <span class="w-2 h-2 bg-blue-400 rounded-full mr-2"></span>
+                                <span class="text-zinc-300">Hibernate</span>
+                            </li>
+                            <li class="flex items-center">
+                                <span class="w-2 h-2 bg-blue-400 rounded-full mr-2"></span>
+                                <span class="text-zinc-300">Tailwind CSS</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="glass-card p-6 rounded-xl card-3d">
+                        <h4 class="font-bold text-xl mb-4 text-white">Tools & Platforms</h4>
+                        <ul class="space-y-2">
+                            <li class="flex items-center">
+                                <span class="w-2 h-2 bg-purple-400 rounded-full mr-2"></span>
+                                <span class="text-zinc-300">Git/GitHub</span>
+                            </li>
+                            <li class="flex items-center">
+                                <span class="w-2 h-2 bg-purple-400 rounded-full mr-2"></span>
+                                <span class="text-zinc-300">MySQL</span>
+                            </li>
+                            <li class="flex items-center">
+                                <span class="w-2 h-2 bg-purple-400 rounded-full mr-2"></span>
+                                <span class="text-zinc-300">Docker</span>
+                            </li>
+                            <li class="flex items-center">
+                                <span class="w-2 h-2 bg-purple-400 rounded-full mr-2"></span>
+                                <span class="text-zinc-300">AWS</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Projects Section with Interactive Grid -->
+        <section id="projects" class="py-20 bg-zinc-900">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-16">
+                    <h3 class="text-4xl font-bold gradient-text mb-4">Projects Showcase</h3>
+                    <div class="w-24 h-1 bg-gradient-to-r from-emerald-400 to-blue-500 mx-auto"></div>
+                    <p class="mt-4 text-zinc-400 max-w-2xl mx-auto">Innovative solutions to real-world problems.</p>
+                </div>
+
+                <div class="flex justify-center mb-12 space-x-4 flex-wrap">
+                    <button
+                        class="filter-btn bg-gradient-to-r from-emerald-500 to-blue-600 text-white px-6 py-2 rounded-full m-1 transition-all hover:shadow-lg hover:shadow-emerald-400/20"
+                        data-filter="all">All Projects</button>
+                    <button
+                        class="filter-btn bg-zinc-800 text-zinc-300 px-6 py-2 rounded-full m-1 transition-all hover:bg-zinc-700"
+                        data-filter="Java">Java</button>
+                    <button
+                        class="filter-btn bg-zinc-800 text-zinc-300 px-6 py-2 rounded-full m-1 transition-all hover:bg-zinc-700"
+                        data-filter="Spring">Spring</button>
+                    <button
+                        class="filter-btn bg-zinc-800 text-zinc-300 px-6 py-2 rounded-full m-1 transition-all hover:bg-zinc-700"
+                        data-filter="React">React</button>
+                    <button
+                        class="filter-btn bg-zinc-800 text-zinc-300 px-6 py-2 rounded-full m-1 transition-all hover:bg-zinc-700"
+                        data-filter="SQL">SQL</button>
+                </div>
+
+                <div id="projects-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Projects will be dynamically inserted here -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Experience Section with Interactive Timeline -->
+        <section id="experience" class="py-20 bg-zinc-950">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-16">
+                    <h3 class="text-4xl font-bold gradient-text mb-4">My Journey</h3>
+                    <div class="w-24 h-1 bg-gradient-to-r from-emerald-400 to-blue-500 mx-auto"></div>
+                    <p class="mt-4 text-zinc-400 max-w-2xl mx-auto">Professional and academic milestones that shaped my
+                        career.</p>
+                </div>
+
+                <div class="max-w-3xl mx-auto">
+                    <div class="timeline-item">
+                        <div class="timeline-dot">1</div>
+                        <div class="timeline-content glass-card">
+                            <h4 class="font-bold text-xl mb-1 text-white">Spring Boot Developer Intern</h4>
+                            <p class="text-sm text-emerald-400 mb-2">RideBuddy (AP Mobility India Private Limited)</p>
+                            <p class="text-xs text-zinc-400 mb-3">Dec 2023 – Jun 2024</p>
+                            <p class="text-zinc-300 text-sm">Developed backend services for transportation management
+                                system using Spring Boot and microservices architecture.</p>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-dot">2</div>
+                        <div class="timeline-content glass-card">
+                            <h4 class="font-bold text-xl mb-1 text-white">Bachelor of Technology</h4>
+                            <p class="text-sm text-emerald-400 mb-2">IIMT UNIVERSITY Meerut</p>
+                            <p class="text-xs text-zinc-400 mb-3">Sep 2022 – Jul 2026 (Expected)</p>
+                            <p class="text-zinc-300 text-sm">CGPA: 8.52 | Specializing in software development and
+                                system design.</p>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-dot">3</div>
+                        <div class="timeline-content glass-card">
+                            <h4 class="font-bold text-xl mb-1 text-white">Java Programmer Intern</h4>
+                            <p class="text-sm text-emerald-400 mb-2">AP Mobility India Private Limited</p>
+                            <p class="text-xs text-zinc-400 mb-3">July 2023 – Nov 2023</p>
+                            <p class="text-zinc-300 text-sm">Contributed to Java-based applications and gained hands-on
+                                experience with enterprise software development.</p>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-dot">4</div>
+                        <div class="timeline-content glass-card">
+                            <h4 class="font-bold text-xl mb-1 text-white">President Of E-Cell IIMTU</h4>
+                            <p class="text-sm text-emerald-400 mb-2">IIMT University</p>
+                            <p class="text-xs text-zinc-400 mb-3">Dec 2022 – Present</p>
+                            <p class="text-zinc-300 text-sm">Leading entrepreneurial initiatives and fostering
+                                innovation among students.</p>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-dot">5</div>
+                        <div class="timeline-content glass-card">
+                            <h4 class="font-bold text-xl mb-1 text-white">Microsoft Learn Student Ambassador</h4>
+                            <p class="text-sm text-emerald-400 mb-2">Microsoft</p>
+                            <p class="text-xs text-zinc-400 mb-3">Dec 2022 – Present</p>
+                            <p class="text-zinc-300 text-sm">Promoting Microsoft technologies and organizing tech events
+                                on campus.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Achievements Section with Animated Numbers -->
+        <section id="achievements" class="py-20 bg-zinc-900">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-16">
+                    <h3 class="text-4xl font-bold gradient-text mb-4">Achievements</h3>
+                    <div class="w-24 h-1 bg-gradient-to-r from-emerald-400 to-blue-500 mx-auto"></div>
+                    <p class="mt-4 text-zinc-400 max-w-2xl mx-auto">Milestones that demonstrate my capabilities and
+                        impact.</p>
+                </div>
+
+                <div class="grid md:grid-cols-3 gap-8 text-center mb-16">
+                    <div class="glass-card p-8 rounded-xl card-3d">
+                        <p class="text-5xl font-extrabold gradient-text mb-2 impact-number" data-target="169">0</p>
+                        <p class="text-xl text-zinc-200">DSA Problems Solved</p>
+                        <p class="text-sm text-zinc-400">LeetCode & GFG</p>
+                    </div>
+                    <div class="glass-card p-8 rounded-xl card-3d">
+                        <p class="text-5xl font-extrabold gradient-text mb-2 impact-number" data-target="25">0</p>
+                        <p class="text-xl text-zinc-200">Coding Environment Growth</p>
+                        <p class="text-sm text-zinc-400">As Coding Club Lead</p>
+                    </div>
+                    <div class="glass-card p-8 rounded-xl card-3d">
+                        <p class="text-5xl font-extrabold gradient-text mb-2 impact-number" data-target="5">0</p>
+                        <p class="text-xl text-zinc-200">Entrepreneurial Mindset Boost</p>
+                        <p class="text-sm text-zinc-400">As E-Cell President</p>
+                    </div>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="glass-card p-6 rounded-xl card-3d">
+                        <h4 class="font-bold text-xl mb-4 text-white">Certifications</h4>
+                        <ul class="space-y-4">
+                            <li class="flex items-start">
+                                <span class="text-emerald-400 mr-3 mt-1">✓</span>
+                                <div>
+                                    <h5 class="font-semibold text-zinc-100">NPTEL Elite + Silver Badge</h5>
+                                    <p class="text-sm text-zinc-400">Introduction to Internet of Things from IIT
+                                        Kharagpur</p>
+                                </div>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-emerald-400 mr-3 mt-1">✓</span>
+                                <div>
+                                    <h5 class="font-semibold text-zinc-100">HackerRank Certifications</h5>
+                                    <p class="text-sm text-zinc-400">4-star in MySQL, 2-star in Problem Solving (Java)
+                                    </p>
+                                </div>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-emerald-400 mr-3 mt-1">✓</span>
+                                <div>
+                                    <h5 class="font-semibold text-zinc-100">Microsoft Learn Modules</h5>
+                                    <p class="text-sm text-zinc-400">Completed multiple learning paths on Azure and
+                                        development</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="glass-card p-6 rounded-xl card-3d">
+                        <h4 class="font-bold text-xl mb-4 text-white">Leadership</h4>
+                        <ul class="space-y-4">
+                            <li class="flex items-start">
+                                <span class="text-blue-400 mr-3 mt-1">★</span>
+                                <div>
+                                    <h5 class="font-semibold text-zinc-100">President of E-Cell</h5>
+                                    <p class="text-sm text-zinc-400">Leading entrepreneurial initiatives at IIMT
+                                        University</p>
+                                </div>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-blue-400 mr-3 mt-1">★</span>
+                                <div>
+                                    <h5 class="font-semibold text-zinc-100">Microsoft Learn Student Ambassador</h5>
+                                    <p class="text-sm text-zinc-400">Promoting tech learning on campus</p>
+                                </div>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-blue-400 mr-3 mt-1">★</span>
+                                <div>
+                                    <h5 class="font-semibold text-zinc-100">Coding Ninjas Campus Captain</h5>
+                                    <p class="text-sm text-zinc-400">Fostering coding culture among students</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Testimonials Section -->
+        <section id="testimonials" class="py-20 bg-zinc-950">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-16">
+                    <h3 class="text-4xl font-bold gradient-text mb-4">Testimonials</h3>
+                    <div class="w-24 h-1 bg-gradient-to-r from-emerald-400 to-blue-500 mx-auto"></div>
+                    <p class="mt-4 text-zinc-400 max-w-2xl mx-auto">What people say about working with me</p>
+                </div>
+
+                <div class="grid md:grid-cols-3 gap-8">
+                    <!-- Testimonial 1 -->
+                    <div
+                        class="testimonial-card p-6 rounded-xl relative overflow-hidden border border-zinc-800 hover:border-emerald-400/50 transition-all duration-300">
+                        <div class="quote-icon opacity-10 text-emerald-400">"</div>
+                        <div class="flex items-center mb-4">
+                            <img src="https://media.licdn.com/dms/image/v2/C4D03AQGUL28p4SpMWQ/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1657521793944?e=1756339200&v=beta&t=l4vIMHZqJ3WpG6z-wFQf5_JcZb_vMIpilBFAASwwTsU" alt="Testimonial"
+                                class="testimonial-avatar rounded-full mr-4 border-2 border-emerald-400">
+                            <div>
+                                <h4 class="font-bold text-white">Pankaj Kumar Singh</h4>
+                                <p class="text-sm text-emerald-400">Dean, School of Engineering & Technology</p>
+                                <p class="text-xs text-zinc-500">IIMT University</p>
+                            </div>
+                        </div>
+                        <p class="text-zinc-300 relative z-10 text-sm leading-relaxed">
+                            "Mukesh Pal is a remarkable student who exemplifies dedication, innovation, and
+                            leadership within the School of Engineering & Technology. His contributions, especially in
+                            initiatives like the INNOTECH CULTURE CLUB and various tech projects, have greatly enriched
+                            our university's
+                            academic and practical learning environment. Mukesh's ability to lead, mentor peers, and
+                            develop impactful
+                            solutions has consistently impressed faculty and students alike."
+                        </p>
+                        <div class="mt-4 pt-4 border-t border-zinc-800">
+                            <p class="text-xs text-zinc-500 italic">"He embodies the values we strive to instill in our
+                                students and stands out as a true asset to IIMT University."</p>
+                        </div>
+                    </div>
+
+                    <!-- Testimonial 2 -->
+                    <div
+                        class="testimonial-card p-6 rounded-xl relative overflow-hidden border border-zinc-800 hover:border-emerald-400/50 transition-all duration-300">
+                        <div class="quote-icon opacity-10 text-emerald-400">"</div>
+                        <div class="flex items-center mb-4">
+                            <img src="https://media.licdn.com/dms/image/v2/C5103AQFxWMMyuP8h7Q/profile-displayphoto-shrink_400_400/profile-displayphoto-shrink_400_400/0/1549548204982?e=1756339200&v=beta&t=gv79243dFQtlePGuMx7x4AcTGc3iupgJuLSnp96iZLE" alt="Testimonial"
+                                class="testimonial-avatar rounded-full mr-4 border-2 border-emerald-400">
+                            <div>
+                                <h4 class="font-bold text-white">Archana Jain</h4>
+                                <p class="text-sm text-emerald-400">HOD, Computer Science Engineering</p>
+                                <p class="text-xs text-zinc-500">IIMT University</p>
+                            </div>
+                        </div>
+                        <p class="text-zinc-300 relative z-10 text-sm leading-relaxed">
+                            "Mukesh Pal exemplifies dedication and technical proficiency. As a student,
+                            he consistently demonstrates a deep commitment to his studies and extracurricular projects,
+                            especially in areas like software development and leadership within the university."
+                        </p>
+                        <div class="mt-4 pt-4 border-t border-zinc-800">
+                            <p class="text-xs text-zinc-500 italic">"His role as a leader in various clubs reflects his
+                                passion for innovation and his ability to inspire and guide his peers. Mukesh is not
+                                only a diligent student but also a promising leader."</p>
+                        </div>
+                    </div>
+
+                    <!-- Testimonial 3 -->
+                    <div
+                        class="testimonial-card p-6 rounded-xl relative overflow-hidden border border-zinc-800 hover:border-emerald-400/50 transition-all duration-300">
+                        <div class="quote-icon opacity-10 text-emerald-400">"</div>
+                        <div class="flex items-center mb-4">
+                            <img src="https://media.licdn.com/dms/image/v2/D5603AQF0tRBoH4x3Rg/profile-displayphoto-crop_800_800/B56ZfK3LRBH8AQ-/0/1751455153064?e=1756339200&v=beta&t=7xAt9bT7KjDYY_UwektbasdQhuYBwHW2d0__IYp6P5U" alt="Testimonial"
+                                class="testimonial-avatar rounded-full mr-4 border-2 border-emerald-400">
+                            <div>
+                                <h4 class="font-bold text-white">Kuldeep Kumar Singh</h4>
+                                <p class="text-sm text-emerald-400">HOD, 1st Year Engineering</p>
+                                <p class="text-xs text-zinc-500">IIMT University</p>
+                            </div>
+                        </div>
+                        <p class="text-zinc-300 relative z-10 text-sm leading-relaxed">
+                            "I am pleased to recommend Mukesh Pal, a dedicated B.Tech student in Computer Science and
+                            Engineering at IIMT University.
+                            As the Head of the 1st Year Engineering Department, I have observed his strong commitment to
+                            academics and his passion
+                            for technology."
+                        </p>
+                        <div class="mt-4 pt-4 border-t border-zinc-800">
+                            <p class="text-xs text-zinc-500 italic">"Mukesh has excelled as the President of the E-Cell
+                                and as a Microsoft Learn Student Ambassador, demonstrating leadership and dedication to
+                                skill development. He possesses excellent communication and teamwork abilities."</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Blog Section -->
+        <section id="blog" class="py-20 bg-zinc-900">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-16">
+                    <h3 class="text-4xl font-bold gradient-text mb-4">My Blog</h3>
+                    <div class="w-24 h-1 bg-gradient-to-r from-emerald-400 to-blue-500 mx-auto"></div>
+                    <p class="mt-4 text-zinc-400 max-w-2xl mx-auto">Sharing knowledge and insights about technology and
+                        leadership</p>
+                </div>
+
+                <div class="grid md:grid-cols-3 gap-8">
+                    <!-- Blog Post 1 -->
+                    <div
+                        class="blog-card rounded-xl overflow-hidden border border-zinc-800 hover:border-emerald-400/50 transition-all duration-300 hover:shadow-lg hover:shadow-emerald-400/10">
+                        <img src="https://iimtu.edu.in/blog/wp-content/uploads/2024/07/a-stunning-3d-render-illustration-of-a-digital-clo-cjCrluNgSdimZaeGK8FLVg-ghWsdcxlQJa4i5_QajFuqg.jpeg"
+                            alt="21 Days Challenge" class="blog-image w-full h-48 object-cover">
+                        <div class="p-6">
+                            <div class="flex justify-between items-center mb-4">
+                                <span
+                                    class="https://miro.medium.com/v2/resize:fit:1100/format:webp/0*smvmN2oCc1ZXq3L3.jpeg">Leadership</span>
+                                <span class="text-zinc-400 text-sm">July 11, 2024</span>
+                            </div>
+                            <h4 class="font-bold text-xl text-white mb-2">21 Days Challenge | Change Your Life in Just
+                                21 Days</h4>
+                            <p class="text-zinc-400 text-sm mb-4">Introduction to the 21 Days Challenge concept and how
+                                committing to small changes can transform your habits and life in just three weeks.</p>
+                            <a href="https://medium.com/@mukesh.mmp1234/21-days-challenge-transform-your-life-in-just-21-days-65e0837ed040"
+                                target="_blank"
+                                class="text-emerald-400 hover:text-emerald-300 text-sm font-semibold transition flex items-center">
+                                Read More <span class="ml-1">→</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Blog Post 2 -->
+                    <div
+                        class="blog-card rounded-xl overflow-hidden border border-zinc-800 hover:border-emerald-400/50 transition-all duration-300 hover:shadow-lg hover:shadow-emerald-400/10">
+                        <img src="https://miro.medium.com/v2/resize:fit:1100/format:webp/0*lJcI1lPOo_0H2G6z"
+                            alt="Professional Developer" class="blog-image w-full h-48 object-cover">
+                        <div class="p-6">
+                            <div class="flex justify-between items-center mb-4">
+                                <span
+                                    class="blog-tag text-xs font-semibold px-3 py-1 rounded-full bg-emerald-400/10 text-emerald-400">Career</span>
+                                <span class="text-zinc-400 text-sm">June 30, 2024</span>
+                            </div>
+                            <h4 class="font-bold text-xl text-white mb-2">How to Become a Professional Developer in
+                                Student Life</h4>
+                            <p class="text-zinc-400 text-sm mb-4">Practical guide for students to transition into
+                                professional developers by building skills, projects, and networking while still in
+                                college.</p>
+                            <a href="https://medium.com/@mukesh.mmp1234/how-to-become-a-professional-developer-in-student-life-4cb765d9cb97"
+                                target="_blank"
+                                class="text-emerald-400 hover:text-emerald-300 text-sm font-semibold transition flex items-center">
+                                Read More <span class="ml-1">→</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Blog Post 3 -->
+                    <div
+                        class="blog-card rounded-xl overflow-hidden border border-zinc-800 hover:border-emerald-400/50 transition-all duration-300 hover:shadow-lg hover:shadow-emerald-400/10">
+                        <img src="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60"
+                            alt="GitHub Campus Expert" class="blog-image w-full h-48 object-cover">
+                        <div class="p-6">
+                            <div class="flex justify-between items-center mb-4">
+                                <span
+                                    class="blog-tag text-xs font-semibold px-3 py-1 rounded-full bg-emerald-400/10 text-emerald-400">DSA</span>
+                                <span class="text-zinc-400 text-sm">July 28, 2024</span>
+                            </div>
+                            <h4 class="font-bold text-xl text-white mb-2">How to Become a GitHub Campus Expert</h4>
+                            <p class="text-zinc-400 text-sm mb-4">Step-by-step guide to becoming a GitHub Campus Expert,
+                                including application process, responsibilities, and benefits of the program.</p>
+                            <a href="https://medium.com/@mukeshpal/how-to-become-a-github-campus-expert" target="_blank"
+                                class="text-emerald-400 hover:text-emerald-300 text-sm font-semibold transition flex items-center">
+                                Read More <span class="ml-1">→</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Blog Post 4 -->
+                    <div
+                        class="blog-card rounded-xl overflow-hidden border border-zinc-800 hover:border-emerald-400/50 transition-all duration-300 hover:shadow-lg hover:shadow-emerald-400/10">
+                        <img src="https://images.unsplash.com/photo-1614680376573-df3480f0c6ff?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60"
+                            alt="MLSA" class="blog-image w-full h-48 object-cover">
+                        <div class="p-6">
+                            <div class="flex justify-between items-center mb-4">
+                                <span
+                                    class="blog-tag text-xs font-semibold px-3 py-1 rounded-full bg-emerald-400/10 text-emerald-400">Microsoft</span>
+                                <span class="text-zinc-400 text-sm">June 15, 2024</span>
+                            </div>
+                            <h4 class="font-bold text-xl text-white mb-2">How to Become a Microsoft Learn Student
+                                Ambassador (MLSA)</h4>
+                            <p class="text-zinc-400 text-sm mb-4">Comprehensive guide on the MLSA program, application
+                                process, and tips to strengthen your profile for this prestigious student ambassador
+                                role.</p>
+                            <a href="https://medium.com/@mukesh.mmp1234/how-to-become-a-microsoft-learn-student-ambassador-mlsa-a-comprehensive-guide-9b2825df378d"
+                                target="_blank"
+                                class="text-emerald-400 hover:text-emerald-300 text-sm font-semibold transition flex items-center">
+                                Read More <span class="ml-1">→</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Blog Post 5 -->
+                    <div
+                        class="blog-card rounded-xl overflow-hidden border border-zinc-800 hover:border-emerald-400/50 transition-all duration-300 hover:shadow-lg hover:shadow-emerald-400/10">
+                        <img src="https://images.unsplash.com/photo-1605152276897-4f618f831968?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60"
+                            alt="Civil Engineering Jobs" class="blog-image w-full h-48 object-cover">
+                        <div class="p-6">
+                            <div class="flex justify-between items-center mb-4">
+                                <span
+                                    class="blog-tag text-xs font-semibold px-3 py-1 rounded-full bg-emerald-400/10 text-emerald-400">Engineering</span>
+                                <span class="text-zinc-400 text-sm">May 22, 2024</span>
+                            </div>
+                            <h4 class="font-bold text-xl text-white mb-2">Top 10 Highest Paying Jobs in Civil
+                                Engineering</h4>
+                            <p class="text-zinc-400 text-sm mb-4">Exploring lucrative career paths in civil engineering,
+                                including required qualifications, salary ranges, and growth opportunities.</p>
+                            <a href="https://medium.com/@mukeshpal/top-10-highest-paying-jobs-in-civil-engineering"
+                                target="_blank"
+                                class="text-emerald-400 hover:text-emerald-300 text-sm font-semibold transition flex items-center">
+                                Read More <span class="ml-1">→</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Blog Post 6 -->
+                    <div
+                        class="blog-card rounded-xl overflow-hidden border border-zinc-800 hover:border-emerald-400/50 transition-all duration-300 hover:shadow-lg hover:shadow-emerald-400/10">
+                        <img src="https://images.unsplash.com/photo-1605106702734-205df224ecce?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60"
+                            alt="Civil Engineering History" class="blog-image w-full h-48 object-cover">
+                        <div class="p-6">
+                            <div class="flex justify-between items-center mb-4">
+                                <span
+                                    class="blog-tag text-xs font-semibold px-3 py-1 rounded-full bg-emerald-400/10 text-emerald-400">Engineering</span>
+                                <span class="text-zinc-400 text-sm">April 18, 2024</span>
+                            </div>
+                            <h4 class="font-bold text-xl text-white mb-2">History of Civil Engineering</h4>
+                            <p class="text-zinc-400 text-sm mb-4">Comprehensive journey through civil engineering's
+                                evolution from ancient wonders to modern infrastructure marvels and technological
+                                advancements.</p>
+                            <a href="https://medium.com/@mukeshpal/history-of-civil-engineering" target="_blank"
+                                class="text-emerald-400 hover:text-emerald-300 text-sm font-semibold transition flex items-center">
+                                Read More <span class="ml-1">→</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-center mt-12">
+                    <a href="https://medium.com/@mukeshpal" target="_blank"
+                        class="inline-block border-2 border-emerald-400 text-emerald-400 font-bold py-3 px-8 rounded-full hover:bg-emerald-400/10 transition-all transform hover:scale-105">
+                        View All Articles on Medium
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section with Interactive Form -->
+        <section id="contact" class="py-20 bg-zinc-950">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-16">
+                    <h3 class="text-4xl font-bold gradient-text mb-4">Get In Touch</h3>
+                    <div class="w-24 h-1 bg-gradient-to-r from-emerald-400 to-blue-500 mx-auto"></div>
+                    <p class="mt-4 text-zinc-400 max-w-2xl mx-auto">Have a project in mind or want to collaborate? I'd
+                        love to hear from you!</p>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-12 items-center">
+                    <div>
+                        <form id="contactForm" class="space-y-6">
+                            <div>
+                                <label for="name" class="block text-sm font-medium text-zinc-300 mb-2">Your Name</label>
+                                <input type="text" id="name" name="name"
+                                    class="w-full px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-400 text-white placeholder-zinc-500 transition"
+                                    placeholder="Enter your name" required>
+                            </div>
+                            <div>
+                                <label for="email" class="block text-sm font-medium text-zinc-300 mb-2">Your
+                                    Email</label>
+                                <input type="email" id="email" name="email"
+                                    class="w-full px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-400 text-white placeholder-zinc-500 transition"
+                                    placeholder="Enter your email" required>
+                            </div>
+                            <div>
+                                <label for="message" class="block text-sm font-medium text-zinc-300 mb-2">Your
+                                    Message</label>
+                                <textarea id="message" name="message" rows="5"
+                                    class="w-full px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-400 text-white placeholder-zinc-500 transition"
+                                    placeholder="Enter your message" required></textarea>
+                            </div>
+                            <button type="submit"
+                                class="w-full bg-gradient-to-r from-emerald-500 to-blue-600 text-white font-bold py-3 px-6 rounded-lg hover:shadow-lg hover:shadow-emerald-400/20 transition-all transform hover:scale-[1.02]">
+                                Send Message
+                            </button>
+                        </form>
+                    </div>
+
+                    <div class="space-y-8">
+                        <div class="glass-card p-6 rounded-xl card-3d">
+                            <h4 class="font-bold text-xl mb-4 text-white">Contact Information</h4>
+                            <div class="space-y-4">
+                                <div class="flex items-start">
+                                    <div class="text-emerald-400 mr-4 mt-1">
+                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z">
+                                            </path>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm text-zinc-400">Email</p>
+                                        <p class="text-zinc-300">mukesh.mmp1234@gmail.com</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start">
+                                    <div class="text-emerald-400 mr-4 mt-1">
+                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z">
+                                            </path>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm text-zinc-400">Phone</p>
+                                        <p class="text-zinc-300">+91 8416982676</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start">
+                                    <div class="text-emerald-400 mr-4 mt-1">
+                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z">
+                                            </path>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm text-zinc-400">Location</p>
+                                        <p class="text-zinc-300">Meerut, Uttar Pradesh, India</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="glass-card p-6 rounded-xl card-3d">
+                            <h4 class="font-bold text-xl mb-4 text-white">Connect With Me</h4>
+                            <div class="flex space-x-6 justify-center">
+                                <a href="https://www.linkedin.com/in/mukprabhakar/"
+                                    class="text-zinc-400 hover:text-emerald-400 transition transform hover:scale-110"
+                                    aria-label="LinkedIn">
+                                    <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
+                                        <path
+                                            d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14zm-7 6.67h-2.5v7.66h2.5v-7.66zM9.25 8.5a1.25 1.25 0 1 0 0-2.5 1.25 1.25 0 0 0 0 2.5zm4.08 2.17c-1.1 0-1.84.51-2.17 1.25h-.03v-1.09h-2.1v7.66h2.19v-3.78c0-.99.2-1.94 1.41-1.94s1.21.94 1.21 2.02v3.7h2.19v-4.5c0-2.5-1.33-3.63-3.1-3.63z" />
+                                    </svg>
+                                </a>
+                                <a href="https://github.com/mukprabhakar"
+                                    class="text-zinc-400 hover:text-emerald-400 transition transform hover:scale-110"
+                                    aria-label="GitHub">
+                                    <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
+                                        <path
+                                            d="M12 2C6.48 2 2 6.48 2 12c0 4.42 2.87 8.17 6.84 9.5.5.09.68-.22.68-.48v-1.69c-2.78.6-3.37-1.34-3.37-1.34-.45-1.15-1.11-1.46-1.11-1.46-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.9 1.53 2.36 1.09 2.94.83.09-.65.35-1.09.63-1.34-2.25-.26-4.6-1.13-4.6-5.01 0-1.11.39-2.01 1.03-2.72-.1-.26-.45-1.28.1-2.68 0 0 .85-.27 2.79 1.03A9.58 9.58 0 0 1 12 6.84c.85.004 1.7.114 2.5.33 1.94-1.3 2.79-1.03 2.79-1.03.55 1.4.2 2.42.1 2.68.64.71 1.03 1.61 1.03 2.72 0 3.89-2.35 4.75-4.61 5.01.36.31.68.92.68 1.85v2.73c0 .27.18.58.69.48A10.01 10.01 0 0 0 22 12c0-5.52-4.48-10-10-10z" />
+                                    </svg>
+                                </a>
+                                <a href="https://x.com/mukprabhakar"
+                                    class="text-zinc-400 hover:text-emerald-400 transition transform hover:scale-110"
+                                    aria-label="Twitter">
+                                    <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
+                                        <path
+                                            d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84" />
+                                    </svg>
+                                </a>
+                                <a href="https://www.instagram.com/mukprabhakar/"
+                                    class="text-zinc-400 hover:text-emerald-400 transition transform hover:scale-110"
+                                    aria-label="Instagram">
+                                    <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
+                                        <path
+                                            d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" />
+                                    </svg>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-zinc-900 text-zinc-400 py-8 border-t border-zinc-800">
+        <div class="container mx-auto px-6">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-4 md:mb-0">
+                    <h2 class="text-xl font-bold gradient-text">Mukesh Pal</h2>
+                    <p class="text-sm mt-1">From blank screens to bold solutions.</p>
+                </div>
+                <div class="flex space-x-6">
+                    <a href="#" class="text-zinc-400 hover:text-emerald-400 transition">Privacy Policy</a>
+                    <a href="#" class="text-zinc-400 hover:text-emerald-400 transition">Terms of Service</a>
+                    <a href="#" class="text-zinc-400 hover:text-emerald-400 transition">Sitemap</a>
+                </div>
+            </div>
+            <div class="mt-8 pt-8 border-t border-zinc-800 text-center text-sm">
+                <p>&copy; 2025 Mukesh Pal. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Project Details Modal -->
+    <div id="projectModal"
+        class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm hidden">
+        <div class="relative bg-zinc-900 rounded-xl max-w-2xl w-full mx-4 p-8 border border-zinc-800 shadow-2xl">
+            <button id="closeModal" class="absolute top-4 right-4 text-zinc-400 hover:text-white">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                    </path>
+                </svg>
+            </button>
+            <h3 id="modalProjectTitle" class="text-2xl font-bold text-white mb-2"></h3>
+            <div id="modalProjectTags" class="flex flex-wrap gap-2 mb-6"></div>
+            <div id="modalProjectIcon" class="text-6xl mb-6 gradient-text text-center"></div>
+            <p id="modalProjectDescription" class="text-zinc-300 mb-6"></p>
+            <div class="flex justify-end space-x-4">
+                <button class="px-6 py-2 bg-zinc-800 text-zinc-300 rounded-lg hover:bg-zinc-700 transition">View
+                    Code</button>
+                <button
+                    class="px-6 py-2 bg-gradient-to-r from-emerald-500 to-blue-600 text-white rounded-lg hover:shadow-lg hover:shadow-emerald-400/20 transition">Live
+                    Demo</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize Typed.js for hero section
+            const typed = new Typed('#typed', {
+                strings: [
+                    'Software Developer',
+                    'Java Enthusiast',
+                    'Spring Boot Developer',
+                    'Tech Leader',
+                    'Problem Solver'
+                ],
+                typeSpeed: 50,
+                backSpeed: 30,
+                loop: true,
+                showCursor: true,
+                cursorChar: '|'
+            });
+
+            // Mobile menu toggle
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+
+            // Initialize particles.js
+            particlesJS('particles-js', {
+                "particles": {
+                    "number": {
+                        "value": 80,
+                        "density": {
+                            "enable": true,
+                            "value_area": 800
+                        }
+                    },
+                    "color": {
+                        "value": "#34d399"
+                    },
+                    "shape": {
+                        "type": "circle",
+                        "stroke": {
+                            "width": 0,
+                            "color": "#000000"
+                        },
+                        "polygon": {
+                            "nb_sides": 5
+                        }
+                    },
+                    "opacity": {
+                        "value": 0.5,
+                        "random": false,
+                        "anim": {
+                            "enable": false,
+                            "speed": 1,
+                            "opacity_min": 0.1,
+                            "sync": false
+                        }
+                    },
+                    "size": {
+                        "value": 3,
+                        "random": true,
+                        "anim": {
+                            "enable": false,
+                            "speed": 40,
+                            "size_min": 0.1,
+                            "sync": false
+                        }
+                    },
+                    "line_linked": {
+                        "enable": true,
+                        "distance": 150,
+                        "color": "#34d399",
+                        "opacity": 0.4,
+                        "width": 1
+                    },
+                    "move": {
+                        "enable": true,
+                        "speed": 2,
+                        "direction": "none",
+                        "random": false,
+                        "straight": false,
+                        "out_mode": "out",
+                        "bounce": false,
+                        "attract": {
+                            "enable": false,
+                            "rotateX": 600,
+                            "rotateY": 1200
+                        }
+                    }
+                },
+                "interactivity": {
+                    "detect_on": "canvas",
+                    "events": {
+                        "onhover": {
+                            "enable": true,
+                            "mode": "grab"
+                        },
+                        "onclick": {
+                            "enable": true,
+                            "mode": "push"
+                        },
+                        "resize": true
+                    },
+                    "modes": {
+                        "grab": {
+                            "distance": 140,
+                            "line_linked": {
+                                "opacity": 1
+                            }
+                        },
+                        "bubble": {
+                            "distance": 400,
+                            "size": 40,
+                            "duration": 2,
+                            "opacity": 8,
+                            "speed": 3
+                        },
+                        "repulse": {
+                            "distance": 200,
+                            "duration": 0.4
+                        },
+                        "push": {
+                            "particles_nb": 4
+                        },
+                        "remove": {
+                            "particles_nb": 2
+                        }
+                    }
+                },
+                "retina_detect": true
+            });
+
+            // Custom cursor effect
+            const cursorFollower = document.getElementById('cursor-follower');
+            document.addEventListener('mousemove', (e) => {
+                cursorFollower.style.left = e.clientX + 'px';
+                cursorFollower.style.top = e.clientY + 'px';
+                cursorFollower.style.opacity = '0.5';
+            });
+
+            document.addEventListener('mouseleave', () => {
+                cursorFollower.style.opacity = '0';
+            });
+
+            document.addEventListener('mouseenter', () => {
+                cursorFollower.style.opacity = '0.5';
+            });
+
+            // Make links interactive with cursor
+            const interactiveElements = document.querySelectorAll('a, button, .card-3d, .terminal');
+            interactiveElements.forEach(el => {
+                el.addEventListener('mouseenter', () => {
+                    cursorFollower.style.transform = 'translate(-50%, -50%) scale(2)';
+                    cursorFollower.style.opacity = '0.2';
+                });
+                el.addEventListener('mouseleave', () => {
+                    cursorFollower.style.transform = 'translate(-50%, -50%) scale(1)';
+                    cursorFollower.style.opacity = '0.5';
+                });
+            });
+
+            // Projects data and filtering
+            const projectsData = [
+                {
+                    title: 'Advanced Hotel Management System',
+                    tags: ['React.js', 'Java', 'SQL'],
+                    description: 'Created a comprehensive React.js and Java-based hotel management system with features for booking, billing, and customer management. Integrated a user-friendly interface with robust database management for efficient data handling by more than 5%, and applied role-based access control for security. Improved overall operational efficiency by 2%.',
+                    icon: '🏨'
+                },
+                {
+                    title: 'Crypto Trading Platform',
+                    tags: ['React.js', 'Java', 'SQL'],
+                    description: 'Designed a crypto trading platform with functionalities for buying, selling, and tracking cryptocurrency prices. Executed secure authentication and real-time data updates using WebSockets. Leveraged historical data analysis for informed trading decisions within seconds.',
+                    icon: '📈'
+                },
+                {
+                    title: 'Automated Bus Scheduling System',
+                    tags: ['Java', 'SQL', 'GIS'],
+                    description: 'Devised a bus scheduling system for Delhi Transport Corporation (DTC) to optimize routes and schedules within seconds according to the requirement. Integrated Spring Boot with GIS mapping for real-time route management and tracking, ensuring the best real-time monitoring suitable for passengers, passenger families, and the government. Orchestrated automated duty scheduling to reduce delays by 45%.',
+                    icon: '🚌'
+                },
+                {
+                    title: 'E-commerce Backend Service',
+                    tags: ['Java', 'Spring Boot', 'SQL'],
+                    description: 'Developed a scalable backend for an e-commerce platform, handling product catalog, user authentication, and order processing. Focused on microservices architecture for high availability and performance.',
+                    icon: '🛒'
+                },
+                {
+                    title: 'Real-time Chat Application',
+                    tags: ['React.js', 'JavaScript', 'WebSockets'],
+                    description: 'Built a real-time chat application with user authentication and persistent messaging using React.js for the frontend and WebSockets for instant communication.',
+                    icon: '💬'
+                },
+                {
+                    title: 'Personal Finance Tracker',
+                    tags: ['React.js', 'Java', 'SQL'],
+                    description: 'Created a web-based personal finance tracker allowing users to log expenses, categorize transactions, and visualize spending habits with interactive charts. Secure data storage and user authentication implemented.',
+                    icon: '💰'
+                }
+            ];
+
+            const projectsGrid = document.getElementById('projects-grid');
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            const projectModal = document.getElementById('projectModal');
+            const closeModal = document.getElementById('closeModal');
+            const modalProjectTitle = document.getElementById('modalProjectTitle');
+            const modalProjectTags = document.getElementById('modalProjectTags');
+            const modalProjectDescription = document.getElementById('modalProjectDescription');
+            const modalProjectIcon = document.getElementById('modalProjectIcon');
+
+            const renderProjects = (filter) => {
+                projectsGrid.innerHTML = '';
+                const filteredProjects = filter === 'all'
+                    ? projectsData
+                    : projectsData.filter(p =>
+                        p.tags.some(tag =>
+                            tag.toLowerCase().includes(filter.toLowerCase())
+                        )
+                    );
+
+                filteredProjects.forEach((project, index) => {
+                    const projectCard = document.createElement('div');
+                    projectCard.className = 'bg-zinc-800 p-6 rounded-xl shadow-lg card-3d cursor-pointer border border-zinc-700 hover:border-emerald-400/50 transition-all duration-300';
+                    projectCard.dataset.index = index;
+
+                    let tagsHtml = project.tags.map(tag =>
+                        `<span class="bg-zinc-700 text-zinc-300 text-xs font-semibold px-3 py-1 rounded-full">${tag}</span>`
+                    ).join('');
+
+                    projectCard.innerHTML = `
+                        <div class="text-6xl mb-4 text-center gradient-text">${project.icon}</div>
+                        <h4 class="font-bold text-xl mb-3 text-white text-center">${project.title}</h4>
+                        <div class="flex flex-wrap justify-center gap-2 mb-4">${tagsHtml}</div>
+                        <p class="text-zinc-400 text-sm line-clamp-3 mb-4">${project.description}</p>
+                        <button class="w-full mt-4 px-4 py-2 bg-zinc-700 hover:bg-zinc-600 text-white rounded-lg transition view-details-btn" data-index="${index}">
+                            View Details
+                        </button>
+                    `;
+                    projectsGrid.appendChild(projectCard);
+                });
+
+                document.querySelectorAll('.view-details-btn').forEach(button => {
+                    button.addEventListener('click', (event) => {
+                        const projectIndex = event.target.dataset.index;
+                        const project = projectsData[projectIndex];
+                        modalProjectTitle.textContent = project.title;
+                        modalProjectTags.innerHTML = project.tags.map(tag =>
+                            `<span class="bg-zinc-800 text-emerald-400 text-sm font-semibold px-3 py-1 rounded-full border border-emerald-400/30">${tag}</span>`
+                        ).join(' ');
+                        modalProjectDescription.textContent = project.description;
+                        modalProjectIcon.textContent = project.icon;
+                        projectModal.classList.remove('hidden');
+                        document.body.style.overflow = 'hidden';
+                    });
+                });
+            };
+
+            filterButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    filterButtons.forEach(btn => {
+                        btn.classList.remove('bg-gradient-to-r', 'from-emerald-500', 'to-blue-600', 'text-white');
+                        btn.classList.add('bg-zinc-800', 'text-zinc-300');
+                    });
+                    button.classList.add('bg-gradient-to-r', 'from-emerald-500', 'to-blue-600', 'text-white');
+                    button.classList.remove('bg-zinc-800', 'text-zinc-300');
+                    renderProjects(button.dataset.filter);
+                });
+            });
+
+            renderProjects('all');
+
+            closeModal.addEventListener('click', () => {
+                projectModal.classList.add('hidden');
+                document.body.style.overflow = 'auto';
+            });
+
+            // Initialize skills chart
+            const skillsCtx = document.getElementById('skillsChart').getContext('2d');
+            new Chart(skillsCtx, {
+                type: 'radar',
+                data: {
+                    labels: ['Java', 'Spring Boot', 'SQL', 'React.js', 'JavaScript', 'HTML/CSS', 'Problem Solving', 'System Design'],
+                    datasets: [{
+                        label: 'Technical Skills',
+                        data: [90, 85, 80, 75, 80, 95, 85, 75],
+                        backgroundColor: 'rgba(52, 211, 153, 0.2)',
+                        borderColor: 'rgba(52, 211, 153, 1)',
+                        borderWidth: 2,
+                        pointBackgroundColor: 'rgba(52, 211, 153, 1)',
+                        pointBorderColor: '#fff',
+                        pointHoverRadius: 5,
+                        pointHoverBackgroundColor: 'rgba(52, 211, 153, 1)',
+                        pointHoverBorderColor: '#fff',
+                        pointHitRadius: 10,
+                        pointBorderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            angleLines: {
+                                display: true,
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            suggestedMin: 0,
+                            suggestedMax: 100,
+                            ticks: {
+                                backdropColor: 'transparent',
+                                color: '#a1a1aa',
+                                stepSize: 20
+                            },
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            pointLabels: {
+                                color: '#e4e4e7',
+                                font: {
+                                    size: 12
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function (context) {
+                                    return `${context.label}: ${context.raw}%`;
+                                }
+                            },
+                            backgroundColor: '#3f3f46',
+                            titleColor: '#f4f4f5',
+                            bodyColor: '#d4d4d8',
+                            borderColor: '#34d399',
+                            borderWidth: 1,
+                            cornerRadius: 6
+                        }
+                    }
+                }
+            });
+
+            // Animate skill bars on scroll
+            const animateSkillBars = () => {
+                const skills = document.querySelectorAll('.skill-progress');
+                skills.forEach(skill => {
+                    const percent = skill.getAttribute('data-percent');
+                    skill.style.width = percent + '%';
+
+                    // Update the percentage text
+                    const skillName = skill.parentElement.previousElementSibling.querySelector('span:last-child').id.replace('-percent', '');
+                    const percentElement = document.getElementById(`${skillName}-percent`);
+
+                    let current = 0;
+                    const interval = setInterval(() => {
+                        if (current >= percent) {
+                            clearInterval(interval);
+                            return;
+                        }
+                        current++;
+                        percentElement.textContent = current + '%';
+                    }, 20);
+                });
+            };
+
+            // Animate numbers on scroll
+            const animateNumbers = () => {
+                const counters = document.querySelectorAll('.impact-number');
+                const speed = 200;
+
+                counters.forEach(counter => {
+                    const updateCount = () => {
+                        const target = +counter.getAttribute('data-target');
+                        let current = +counter.innerText.replace(/[+%]/g, '');
+                        const inc = target / speed;
+
+                        if (current < target) {
+                            counter.innerText = Math.ceil(current + inc);
+                            setTimeout(updateCount, 1);
+                        } else {
+                            counter.innerText = target + (['25', '5'].includes(counter.getAttribute('data-target')) ? '%' : '+');
+                        }
+                    };
+                    updateCount();
+                });
+            };
+
+            // Intersection Observer for animations
+            const observerOptions = {
+                threshold: 0.1
+            };
+
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        if (entry.target.id === 'skills') {
+                            animateSkillBars();
+                        }
+                        if (entry.target.id === 'achievements') {
+                            animateNumbers();
+                        }
+                        entry.target.classList.add('animate-fade-in');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('section').forEach(section => {
+                observer.observe(section);
+            });
+
+            // Form submission to email
+            const contactForm = document.getElementById('contactForm');
+            if (contactForm) {
+                contactForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+
+                    const name = contactForm.querySelector('#name').value;
+                    const email = contactForm.querySelector('#email').value;
+                    const message = contactForm.querySelector('#message').value;
+
+                    if (!name || !email || !message) {
+                        alert('Please fill in all fields.');
+                        return;
+                    }
+
+                    // Using FormSubmit.co to send emails
+                    const formData = new FormData(contactForm);
+
+                    try {
+                        const response = await fetch('https://formsubmit.co/ajax/mukesh.mmp1234@gmail.com', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Accept': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                name: name,
+                                email: email,
+                                message: message
+                            })
+                        });
+
+                        const data = await response.json();
+
+                        if (data.success === 'true') {
+                            alert(`Thank you for your message, ${name}! I will get back to you soon.`);
+                            contactForm.reset();
+                        } else {
+                            alert('There was an error sending your message. Please try again later.');
+                        }
+                    } catch (error) {
+                        console.error('Error:', error);
+                        alert('There was an error sending your message. Please try again later.');
+                    }
+                });
+            }
+
+            // Initialize 3D avatar (simplified example)
+            const init3DAvatar = () => {
+                const container = document.getElementById('avatar-container');
+                if (!container) return;
+
+                const scene = new THREE.Scene();
+                const camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
+                const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+                renderer.setSize(128, 128);
+                container.appendChild(renderer.domElement);
+
+                // Add lights
+                const ambientLight = new THREE.AmbientLight(0x34d399, 0.5);
+                scene.add(ambientLight);
+
+                const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+                directionalLight.position.set(1, 1, 1);
+                scene.add(directionalLight);
+
+                // Create avatar (simplified sphere for example)
+                const geometry = new THREE.SphereGeometry(1, 32, 32);
+                const material = new THREE.MeshPhongMaterial({
+                    color: 0x34d399,
+                    specular: 0x111111,
+                    shininess: 30
+                });
+                const avatar = new THREE.Mesh(geometry, material);
+                scene.add(avatar);
+
+                camera.position.z = 2;
+
+                // Animation loop
+                const animate = () => {
+                    requestAnimationFrame(animate);
+                    avatar.rotation.x += 0.005;
+                    avatar.rotation.y += 0.01;
+                    renderer.render(scene, camera);
+                };
+                animate();
+
+                // Make it interactive
+                container.addEventListener('mousemove', (e) => {
+                    const rect = container.getBoundingClientRect();
+                    const x = (e.clientX - rect.left) / rect.width * 2 - 1;
+                    const y = -(e.clientY - rect.top) / rect.height * 2 + 1;
+
+                    avatar.rotation.y = x * 0.5;
+                    avatar.rotation.x = y * 0.5;
+                });
+            };
+
+            // Only initialize 3D avatar on larger screens
+            if (window.innerWidth > 768) {
+                init3DAvatar();
+            }
+        });
+    </script>
+</body>
+
+</html>
